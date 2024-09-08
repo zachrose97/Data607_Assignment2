@@ -1,0 +1,40 @@
+
+```{r setup, include=FALSE}
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
+if (!require("DBI")) {
+    install.packages("DBI")
+}
+if (!require("RMySQL")) {
+    install.packages("RMySQL")
+}
+
+library(DBI)
+library(RMySQL)
+```
+
+
+```{r}
+con <- dbConnect(RMySQL::MySQL(),
+                 dbname = "MovieRatings",
+                 host = "localhost",
+                 user = "root",
+                 password = "password") 
+```
+
+```{r}
+movies_df <- dbGetQuery(con, "SELECT Persons.PersonName, Movies.MovieTitle,
+Ratings.Rating 
+                                 FROM Ratings 
+                                 JOIN Persons ON Ratings.PersonID = Persons.PersonID 
+                                 JOIN Movies ON Ratings.MovieID = Movies.MovieID")
+print(movies_df)
+```
+
+```{r}
+dbDisconnect(con)
+```
+
+
+
+
